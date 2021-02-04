@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace chess
 {
@@ -7,17 +8,18 @@ namespace chess
     {
         protected int id;
         protected int value;
-        protected (int, int) pos;
-        protected (int, int) oldPos;
-        protected (int, int)[] potentialPos; //The positions this piece can move to
+        protected Vector2 pos;
+        protected Vector2 oldPos;
+        protected ICollection<Vector2> potentialPos; //The positions this piece can move to
         protected Texture2D texture;
         protected PieceColor color;
         protected string name;
         protected string notation;
 
-        public Piece(PieceColor color)
+        public Piece(Texture2D texture, PieceColor color)
         {
             this.color = color;
+            this.texture = texture;
         }
 
         public void Update(GameTime gameTime)
@@ -28,9 +30,23 @@ namespace chess
             }
         }
 
-        abstract public void Move((int, int) pos);
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(texture, pos, Color.White);
+        }
 
-        abstract public (int, int)[] CalculateMovePotential();
+        public void SetPosition(Vector2 newPosition)
+        {
+            pos = newPosition;
+        }
+
+        public void Move(Vector2 pos)
+        {
+            if (potentialPos.Contains(pos))
+                this.pos = pos;
+        }
+
+        abstract public Vector2[] CalculateMovePotential();
 
     }
 
