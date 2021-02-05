@@ -8,6 +8,7 @@ namespace chess
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        Piece test;
 
         public Game1()
         {
@@ -33,6 +34,7 @@ namespace chess
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            test = new Pawn(Content.Load<Texture2D>("pawn"), new PieceColor("t"), (4, 4));
         }
 
         protected override void Update(GameTime gameTime)
@@ -52,6 +54,7 @@ namespace chess
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
             Board.Draw(_spriteBatch);
+            test.Draw(_spriteBatch);
 
             _spriteBatch.End();
 

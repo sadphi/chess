@@ -8,12 +8,14 @@ namespace chess
         private static Texture2D _textureDark;
         private static Texture2D _textureLight;
         private static Color[]   _colorDark  = new Color[] { Color.Black };
-        private static Color[]   _colorLight = new Color[] { Color.Beige };
+        private static Color[]   _colorLight = new Color[] { Color.White };
 
         private static int _tileWidth = 128;
         private static int _tileHeight = 128;
         private static int _boardOffsetHoriz = (int)(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 3.5f);
         private static int _boardOffsetVert  = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height  / 6;
+
+        private static Rectangle[,] _tiles = new Rectangle[8, 8];
 
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
@@ -22,6 +24,7 @@ namespace chess
 
             _textureLight = new Texture2D(graphicsDevice, 1, 1);
             _textureLight.SetData(_colorLight);
+            SetTilePositions();
         }
 
         public static void Update(GameTime gameTime)
@@ -34,12 +37,9 @@ namespace chess
             Texture2D curColor = firstColor;
             for (int i = 0; i < 8; i++)
             {
-                int yPos = _boardOffsetVert + i * _tileHeight;
-                
                 for (int j = 0; j < 8; j++)
                 {
-                    int xPos = _boardOffsetHoriz + j * _tileWidth;
-                    spriteBatch.Draw(curColor, new Rectangle(xPos, yPos, _tileWidth, _tileHeight), Color.White);
+                    spriteBatch.Draw(curColor, _tiles[i,j], Color.White);
                     
                     if (j != 7) curColor = SwitchCurrentColor(curColor); //Don't switch color last tile
                 }
@@ -55,6 +55,19 @@ namespace chess
             return _textureLight;
         }
 
+        private static void SetTilePositions()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                int y = _boardOffsetVert + i * _tileHeight;
+                for (int j = 0; j < 8; j++)
+                {
+                    int x = _boardOffsetHoriz + j * _tileWidth;
+                    _tiles[i,j] = new Rectangle(x, y, _tileWidth, _tileHeight);
+                }
+            }
+        }
+
         public static Color[] GetColorDark()
         {
             return _colorDark;
@@ -63,6 +76,11 @@ namespace chess
         public static Color[] GetColorLight()
         {
             return _colorLight;
+        }
+
+        public static Rectangle GetTileAtIndex((int, int) index)
+        {
+            return _tiles[index.Item1, index.Item2];
         }
     }
 }

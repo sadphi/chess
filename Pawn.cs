@@ -11,14 +11,14 @@ namespace chess
 {
     class Pawn : Piece
     {
-        public Pawn(Texture2D texture, PieceColor color) : base(texture, color)
+        public Pawn(Texture2D texture, PieceColor color, (int, int) pos) : base(texture, color, pos)
         {
             name = "Pawn";
             notation = "P";
             value = 1;
         }
 
-        public override Vector2[] CalculateMovePotential()
+        public override (int, int)[] CalculatePotentialMoves()
         {
             throw new NotImplementedException();
         }

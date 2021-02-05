@@ -8,45 +8,59 @@ namespace chess
     {
         protected int id;
         protected int value;
-        protected Vector2 pos;
-        protected Vector2 oldPos;
-        protected ICollection<Vector2> potentialPos; //The positions this piece can move to
+        protected (int, int) tile;                        //Coordinate of current tile
+        protected Vector2 boardPos;                       //The "real" position (used to move/draw tile)
+        protected (int, int) prevTile;                    //The tile where this piece was previously standing
+        protected ICollection<(int, int)> potentialTiles; //The tiles this piece can move to
         protected Texture2D texture;
         protected PieceColor color;
         protected string name;
         protected string notation;
 
-        public Piece(Texture2D texture, PieceColor color)
+        public Piece(Texture2D texture, PieceColor color, (int, int) pos)
         {
             this.color = color;
             this.texture = texture;
+            tile = pos;
+            Move(pos);
+
+            potentialTiles = new List<(int, int)>();
         }
 
         public void Update(GameTime gameTime)
         {
-            if (pos != oldPos)
+            if (tile != prevTile)
             {
-                potentialPos = CalculateMovePotential();
+                potentialTiles = CalculatePotentialMoves();
             }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, pos, Color.White);
+            //TODO: Implement usage of PieceColor
+            spriteBatch.Draw(texture, boardPos, Color.White);
         }
 
-        public void SetPosition(Vector2 newPosition)
+        public void Move((int, int) pos)
         {
-            pos = newPosition;
+            if (potentialTiles == null) //Collection is always null when the piece spawns for the first time
+            {
+                SetBoardPosition(pos);
+            }
+
+            else if (potentialTiles.Contains(pos))
+            {
+                SetBoardPosition(pos);
+            }
         }
 
-        public void Move(Vector2 pos)
+        private void SetBoardPosition((int, int) pos)
         {
-            if (potentialPos.Contains(pos))
-                this.pos = pos;
+            Rectangle t = Board.GetTileAtIndex(pos); //Get the center point of this tile
+            boardPos = new Vector2(t.Center.X - texture.Width / 2, t.Center.Y - texture.Height / 2);
         }
 
-        abstract public Vector2[] CalculateMovePotential();
+        abstract public (int, int)[] CalculatePotentialMoves();
 
     }
 
