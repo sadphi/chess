@@ -67,6 +67,7 @@ namespace chess
                         {
                             curPlayer.SelectedPiece = null;
                             curPlayer.HasSelectedPiece = false;
+                            gameManager.NextTurn();
                             break;
                         }
                     }

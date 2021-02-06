@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,27 @@ namespace chess
             _curPlayer.IsMyTurn = true;
             _playerOne = playerOne;
             _playerTwo = playerTwo;
+        }
+
+        /// <summary>
+        /// Updates all game logic, including each player.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public void Update(GameTime gameTime)
+        {
+            foreach (Player p in _players)
+            {
+                p.Update(gameTime);
+            }
+        }
+
+        /// <summary>
+        /// Begin next turn (switches current player to the other player)
+        /// </summary>
+        public void NextTurn()
+        {
+            if (_curPlayer == _playerOne) _curPlayer = _playerTwo;
+            else _curPlayer = _playerOne;
         }
 
         public Player CurrentPlayer

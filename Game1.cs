@@ -51,10 +51,7 @@ namespace chess
                 Exit();
             InputManager.Update(gameManager, gameTime);
 
-            foreach (Player p in gameManager.Players)
-            {
-                p.Update(gameTime);
-            }
+            gameManager.Update(gameTime);
 
             base.Update(gameTime);
         }
