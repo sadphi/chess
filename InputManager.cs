@@ -44,6 +44,7 @@ namespace chess
                         } 
                         else if (sr.Count == 1)
                         {
+                            Board.SelectedTile = t;
                             curPlayer.SelectedPiece = sr[0];
                             curPlayer.HasSelectedPiece = true;
                             break;
@@ -62,11 +63,14 @@ namespace chess
                     {
                         bool isSuccess = curPlayer.SelectedPiece.Move(t.Coordinate);
 
-                        //Check if move was successful, and unselect piece if it was
+                        //Remove highlight from tile, and unselect piece.
+                        Board.SelectedTile = null;
+                        curPlayer.SelectedPiece = null;
+                        curPlayer.HasSelectedPiece = false;
+
+                        //Check if move was successful, and go to next turn if it was.
                         if (isSuccess)
                         {
-                            curPlayer.SelectedPiece = null;
-                            curPlayer.HasSelectedPiece = false;
                             gameManager.NextTurn();
                             break;
                         }

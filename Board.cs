@@ -8,8 +8,11 @@ namespace chess
     {
         private static Texture2D _textureDark;
         private static Texture2D _textureLight;
-        private static Color[]   _colorDark  = new Color[] { Color.Black };
-        private static Color[]   _colorLight = new Color[] { Color.White };
+        private static Texture2D _textureHighlight;
+
+        private static Color[]   _colorDark      = new Color[] { Color.Black };
+        private static Color[]   _colorLight     = new Color[] { Color.White };
+        private static Color[]   _colorHighlight = new Color[] { Color.Yellow };
 
         private static readonly int _tileWidth = 128;
         private static readonly int _tileHeight = 128;
@@ -17,6 +20,7 @@ namespace chess
         private static int _boardOffsetVert  = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height  / 6;
 
         private static Tile[,] _tiles = new Tile[8, 8];
+        private static Tile _selectedTile;
 
         /// <summary>
         /// Sets up the board. Must be called first, before any other call.
@@ -28,6 +32,9 @@ namespace chess
 
             _textureLight = new Texture2D(graphicsDevice, 1, 1);
             _textureLight.SetData(_colorLight);
+
+            _textureHighlight = new Texture2D(graphicsDevice, 1, 1);
+            _textureHighlight.SetData(_colorHighlight);
             CreateTiles();
         }
 
@@ -92,21 +99,32 @@ namespace chess
 
 
         /// <returns>The color for the dark tiles.</returns>
-        public static Color[] GetColorDark
+        public static Color[] ColorDark
         {
             get => _colorDark;
         }
 
         /// <returns>The color for the light tiles.</returns>
-        public static Color[] GetColorLight
+        public static Color[] ColorLight
         {
             get => _colorLight;
+        }
+
+        public static Texture2D TextureHighlight
+        {
+            get => _textureHighlight;
         }
 
         /// <returns>A 2D-array containing all tiles on the board.</returns>
         public static Tile[,] Tiles
         {
             get => _tiles;
+        }
+
+        public static Tile SelectedTile
+        {
+            get => _selectedTile;
+            set => _selectedTile = value;
         }
     }
 
@@ -116,6 +134,7 @@ namespace chess
     public class Tile
     {
         private Texture2D _texture;
+        private static Texture2D _textureHighlight = Board.TextureHighlight;
 
         private Rectangle _pos;
         private (int, int) _coordinate;
@@ -141,7 +160,8 @@ namespace chess
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, _pos, Color.White);
+            if (Board.SelectedTile == this) spriteBatch.Draw(_textureHighlight, _pos, Color.White);
+            else spriteBatch.Draw(_texture, _pos, Color.White);
         }
 
         /// <returns>This tile's position on the screen(as Rectangle)</returns>
