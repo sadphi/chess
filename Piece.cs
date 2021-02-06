@@ -14,7 +14,7 @@ namespace chess
         protected (int, int) tile;                   //Coordinate of current tile
         protected Vector2 boardPos;                  //The "real" position (used to move/draw tile)
         protected (int, int) prevTile;               //The tile where this piece was previously standing
-        protected IList<(int, int)> possibleMoves;   //The tiles this piece can move to
+        protected List<(int, int)> possibleMoves;   //The tiles this piece can move to
         protected Texture2D texture;
         protected PieceColor color;
         protected string name;
@@ -24,7 +24,6 @@ namespace chess
         {
             this.color = color;
             this.texture = texture;
-            tile = pos;
             Move(pos);
 
             possibleMoves = new List<(int, int)>();
@@ -79,6 +78,7 @@ namespace chess
         /// </summary>
         private void SetBoardPosition((int, int) pos)
         {
+            tile = pos;
             Rectangle t = Board.GetTileAtIndex(pos).Position; //Get the position of this tile
             boardPos = new Vector2(t.Center.X - texture.Width / 2, t.Center.Y - texture.Height / 2);
         }
@@ -87,7 +87,7 @@ namespace chess
         /// Calculate which tiles this piece can move to.
         /// </summary>
         /// <returns>A collection of possible tiles. Is empty if no moves can be made.</returns>
-        abstract protected IList<(int, int)> FindPossibleMoves();
+        abstract protected List<(int, int)> FindPossibleMoves();
 
         public Vector2 Pos
         {
@@ -99,9 +99,14 @@ namespace chess
             get => tile;
         }
 
-        public IList<(int, int)> PossibleMoves
+        public List<(int, int)> PossibleMoves
         {
             get => possibleMoves;
+        }
+
+        public int Value
+        {
+            get => value;
         }
 
     }

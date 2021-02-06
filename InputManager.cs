@@ -36,21 +36,8 @@ namespace chess
                 {
                     if (t.Position.Contains(_mouseRectangle))
                     {
-                        //Find the piece standing on this tile (Should only contain one element)
-                        List<Piece> sr = curPlayer.Pieces.Where(p => p.TileCoordinate == t.Coordinate).ToList();
-                        if (sr.Count > 1)
-                        {
-                            throw new Exception("More than one piece exists on the same tile!");
-                        } 
-                        else if (sr.Count == 1)
-                        {
-                            Board.SelectedTile = t;
-                            Board.HighlightPossibleMoves(sr[0].PossibleMoves, removeHighlight: false);
-                            curPlayer.SelectedPiece = sr[0];
-                            curPlayer.HasSelectedPiece = true;
-                            break;
-                        }
-                        //Do nothing if none of this player's piece's are at the tile.
+                        //Try selecting a piece at tile 't'
+                        if (curPlayer.SelectPiece(t)) break;
                     }
                 }
             }
@@ -62,20 +49,14 @@ namespace chess
                 {
                     if (t.Position.Contains(_mouseRectangle))
                     {
-                        bool isSuccess = curPlayer.SelectedPiece.Move(t.Coordinate);
-
-                        //Remove highlight from tile, and unselect piece.
-                        Board.SelectedTile = null;
-                        Board.HighlightPossibleMoves(curPlayer.SelectedPiece.PossibleMoves, removeHighlight: true);
-                        curPlayer.SelectedPiece = null;
-                        curPlayer.HasSelectedPiece = false;
-
-                        //Check if move was successful, and go to next turn if it was.
-                        if (isSuccess)
+                        //Try moving the player's selected piece to tile 't'. Go to next turn if it was.
+                        Player other = gameManager.Players.Find(p => p != curPlayer);
+                        if (curPlayer.MovePiece(t, other))
                         {
                             gameManager.NextTurn();
                             break;
                         }
+                        
                     }
                 }
             }

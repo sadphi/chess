@@ -18,10 +18,12 @@ namespace chess
             value = 1;
         }
 
-        protected override (int, int)[] FindPossibleMoves()
+        protected override List<(int, int)> FindPossibleMoves()
         {
             //throw new NotImplementedException();
-            return new (int, int)[] { (0, 0) };
+            var r = new List<(int, int)>();
+            r.Add((0, 0));
+            return r;
         }
     }
 }

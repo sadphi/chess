@@ -90,7 +90,7 @@ namespace chess
         /// </summary>
         /// <param name="moves">The possible moves of the selected piece. (Tile coordinates)</param>
         /// <param name="removeHighlight">Removes highlights if set to true.</param>
-        public static void HighlightPossibleMoves(IList<(int, int)> moves, bool removeHighlight)
+        public static void HighlightPossibleMoves(List<(int, int)> moves, bool removeHighlight)
         {
             foreach (var move in moves)
             {

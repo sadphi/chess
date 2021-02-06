@@ -12,7 +12,7 @@ namespace chess
         private Player _curPlayer;
         private Player _playerOne;
         private Player _playerTwo;
-        private IList<Player> _players = new List<Player>();
+        private List<Player> _players = new List<Player>();
 
         /// <summary>
         /// Sets up the game manager. Must be called first, before any other call.
@@ -76,7 +76,7 @@ namespace chess
             get => _playerTwo;
         }
 
-        public IList<Player> Players
+        public List<Player> Players
         {
             get => _players;
         }
