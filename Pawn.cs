@@ -20,7 +20,8 @@ namespace chess
 
         public override (int, int)[] CalculatePotentialMoves()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return new (int, int)[] { (0, 0) };
         }
     }
 }

@@ -96,7 +96,7 @@ namespace chess
         /// <summary>
         /// Calculate which tiles this piece can move to.
         /// </summary>
-        /// <returns>A collection of possible tiles.</returns>
+        /// <returns>A collection of possible tiles. Is empty if no moves can be made.</returns>
         abstract public IList<(int, int)> CalculatePotentialMoves();
 
     }

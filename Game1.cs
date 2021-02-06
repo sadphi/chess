@@ -8,7 +8,11 @@ namespace chess
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        Piece test;
+        Piece piece1;
+        Piece piece2;
+        Player player1;
+        Player player2;
+        GameManager gameManager;
 
         public Game1()
         {
@@ -34,15 +38,23 @@ namespace chess
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            test = new Pawn(Content.Load<Texture2D>("pawn"), new PieceColor("t"), (4, 4));
+            piece1 = new Pawn(Content.Load<Texture2D>("pawn"), new PieceColor("t"), (4, 4));
+            piece2 = new Pawn(Content.Load<Texture2D>("pawn"), new PieceColor("x"), (2, 2));
+            player1 = new Player(piece1);
+            player2 = new Player(piece2);
+            gameManager = new GameManager(player1, player2);
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            InputManager.Update(gameManager, gameTime);
 
-            // TODO: Add your update logic here
+            foreach (Player p in gameManager.Players)
+            {
+                p.Update(gameTime);
+            }
 
             base.Update(gameTime);
         }
@@ -54,7 +66,10 @@ namespace chess
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
             Board.Draw(_spriteBatch);
-            test.Draw(_spriteBatch);
+            foreach (Player p in gameManager.Players)
+            {
+                p.Draw(_spriteBatch);
+            }
 
             _spriteBatch.End();
 

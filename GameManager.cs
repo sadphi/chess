@@ -11,6 +11,7 @@ namespace chess
         private Player _curPlayer;
         private Player _playerOne;
         private Player _playerTwo;
+        private IList<Player> _players = new List<Player>();
 
         /// <summary>
         /// Sets up the game manager. Must be called first, before any other call.
@@ -30,7 +31,10 @@ namespace chess
                 _curPlayer = firstPlayer;
             }
 
-            _curPlayer = firstPlayer;
+            _players.Add(playerOne);
+            _players.Add(playerTwo);
+
+            _curPlayer.IsMyTurn = true;
             _playerOne = playerOne;
             _playerTwo = playerTwo;
         }
@@ -48,6 +52,11 @@ namespace chess
         public Player PlayerTwo
         {
             get => _playerTwo;
+        }
+
+        public IList<Player> Players
+        {
+            get => _players;
         }
     }
 
