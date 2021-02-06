@@ -45,11 +45,12 @@ namespace chess
                         else if (sr.Count == 1)
                         {
                             Board.SelectedTile = t;
+                            Board.HighlightPossibleMoves(sr[0].PossibleMoves, removeHighlight: false);
                             curPlayer.SelectedPiece = sr[0];
                             curPlayer.HasSelectedPiece = true;
                             break;
                         }
-                        //Do nothing if none of this player's piece at the tile.
+                        //Do nothing if none of this player's piece's are at the tile.
                     }
                 }
             }
@@ -65,6 +66,7 @@ namespace chess
 
                         //Remove highlight from tile, and unselect piece.
                         Board.SelectedTile = null;
+                        Board.HighlightPossibleMoves(curPlayer.SelectedPiece.PossibleMoves, removeHighlight: true);
                         curPlayer.SelectedPiece = null;
                         curPlayer.HasSelectedPiece = false;
 

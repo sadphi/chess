@@ -11,10 +11,10 @@ namespace chess
     {
         protected int id;
         protected int value;
-        protected (int, int) tile;                               //Coordinate of current tile
-        protected Vector2 boardPos;                              //The "real" position (used to move/draw tile)
-        protected (int, int) prevTile;                           //The tile where this piece was previously standing
-        protected IList<(int, int)> potentialTiles;              //The tiles this piece can move to
+        protected (int, int) tile;                   //Coordinate of current tile
+        protected Vector2 boardPos;                  //The "real" position (used to move/draw tile)
+        protected (int, int) prevTile;               //The tile where this piece was previously standing
+        protected IList<(int, int)> possibleMoves;   //The tiles this piece can move to
         protected Texture2D texture;
         protected PieceColor color;
         protected string name;
@@ -27,7 +27,7 @@ namespace chess
             tile = pos;
             Move(pos);
 
-            potentialTiles = new List<(int, int)>();
+            possibleMoves = new List<(int, int)>();
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace chess
         {
             if (tile != prevTile)
             {
-                potentialTiles = CalculatePotentialMoves();
+                possibleMoves = FindPossibleMoves();
             }
         }
 
@@ -59,13 +59,13 @@ namespace chess
         /// <returns>true if move was made, false otherwise.</returns> 
         public bool Move((int, int) pos)
         {
-            if (potentialTiles == null) //Collection is always null when the piece spawns for the first time
+            if (possibleMoves == null) //Collection is always null when the piece spawns for the first time
             {
                 SetBoardPosition(pos);
                 return true;
             }
 
-            else if (potentialTiles.Contains(pos))
+            else if (possibleMoves.Contains(pos))
             {
                 SetBoardPosition(pos);
                 return true;
@@ -83,6 +83,12 @@ namespace chess
             boardPos = new Vector2(t.Center.X - texture.Width / 2, t.Center.Y - texture.Height / 2);
         }
 
+        /// <summary>
+        /// Calculate which tiles this piece can move to.
+        /// </summary>
+        /// <returns>A collection of possible tiles. Is empty if no moves can be made.</returns>
+        abstract protected IList<(int, int)> FindPossibleMoves();
+
         public Vector2 Pos
         {
             get => boardPos;
@@ -93,11 +99,10 @@ namespace chess
             get => tile;
         }
 
-        /// <summary>
-        /// Calculate which tiles this piece can move to.
-        /// </summary>
-        /// <returns>A collection of possible tiles. Is empty if no moves can be made.</returns>
-        abstract public IList<(int, int)> CalculatePotentialMoves();
+        public IList<(int, int)> PossibleMoves
+        {
+            get => possibleMoves;
+        }
 
     }
 

@@ -1,26 +1,56 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace chess
 {
-    //TODO: Add code that highlights tile when a player has selected a piece
     public static class Board
     {
         private static Texture2D _textureDark;
         private static Texture2D _textureLight;
-        private static Texture2D _textureHighlight;
 
-        private static Color[]   _colorDark      = new Color[] { Color.Black };
-        private static Color[]   _colorLight     = new Color[] { Color.White };
-        private static Color[]   _colorHighlight = new Color[] { Color.Yellow };
+        private static Color[] _colorDark = new Color[] { Color.Black };
+        private static Color[] _colorLight = new Color[] { Color.White };
+        private static Color _colorSelectedTile = new Color(37, 170, 146);
+        private static Color _colorPossibleMove = new Color(94, 191, 21);
 
         private static readonly int _tileWidth = 128;
         private static readonly int _tileHeight = 128;
         private static int _boardOffsetHoriz = (int)(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 3.5f);
-        private static int _boardOffsetVert  = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height  / 6;
+        private static int _boardOffsetVert = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 6;
 
         private static Tile[,] _tiles = new Tile[8, 8];
         private static Tile _selectedTile;
+
+        /// <summary>
+        /// Creates all tiles needed for a full board.
+        /// </summary>
+        private static void CreateTiles()
+        {
+            Texture2D firstColor = _textureLight;
+            Texture2D curColor = firstColor;
+            for (int i = 0; i < 8; i++)
+            {
+                int y = _boardOffsetVert + i * _tileHeight;
+                for (int j = 0; j < 8; j++)
+                {
+                    int x = _boardOffsetHoriz + j * _tileWidth;
+                    _tiles[i, j] = new Tile(curColor, _tileWidth, _tileHeight, (i, j), new Rectangle(x, y, _tileWidth, _tileHeight));
+
+
+                    if (j != 7) curColor = SwitchCurrentColor(curColor); //Don't switch color last tile
+                }
+            }
+        }
+
+        private static Texture2D SwitchCurrentColor(Texture2D currentColor)
+        {
+            if (currentColor == _textureLight)
+            {
+                return _textureDark;
+            }
+            return _textureLight;
+        }
 
         /// <summary>
         /// Sets up the board. Must be called first, before any other call.
@@ -33,8 +63,6 @@ namespace chess
             _textureLight = new Texture2D(graphicsDevice, 1, 1);
             _textureLight.SetData(_colorLight);
 
-            _textureHighlight = new Texture2D(graphicsDevice, 1, 1);
-            _textureHighlight.SetData(_colorHighlight);
             CreateTiles();
         }
 
@@ -57,33 +85,17 @@ namespace chess
             }
         }
 
-        private static Texture2D SwitchCurrentColor(Texture2D currentColor)
-        {
-            if (currentColor == _textureLight)
-            {
-                return _textureDark;
-            }
-            return _textureLight;
-        }
-
         /// <summary>
-        /// Creates all tiles needed for a full board.
+        /// Highlights, or removes the highlights, of the tiles a piece can move to. 
         /// </summary>
-        private static void CreateTiles()
+        /// <param name="moves">The possible moves of the selected piece. (Tile coordinates)</param>
+        /// <param name="removeHighlight">Removes highlights if set to true.</param>
+        public static void HighlightPossibleMoves(IList<(int, int)> moves, bool removeHighlight)
         {
-            Texture2D firstColor = _textureLight;
-            Texture2D curColor = firstColor;
-            for (int i = 0; i < 8; i++)
+            foreach (var move in moves)
             {
-                int y = _boardOffsetVert + i * _tileHeight;
-                for (int j = 0; j < 8; j++)
-                {
-                    int x = _boardOffsetHoriz + j * _tileWidth;
-                    _tiles[i, j] = new Tile(curColor, _tileWidth, _tileHeight, (i, j), new Rectangle(x, y, _tileWidth, _tileHeight));
-
-
-                    if (j != 7) curColor = SwitchCurrentColor(curColor); //Don't switch color last tile
-                }
+                if (!removeHighlight) GetTileAtIndex(move).IsPossibleMove = true;
+                else                  GetTileAtIndex(move).IsPossibleMove = false;
             }
         }
 
@@ -110,11 +122,6 @@ namespace chess
             get => _colorLight;
         }
 
-        public static Texture2D TextureHighlight
-        {
-            get => _textureHighlight;
-        }
-
         /// <returns>A 2D-array containing all tiles on the board.</returns>
         public static Tile[,] Tiles
         {
@@ -126,6 +133,16 @@ namespace chess
             get => _selectedTile;
             set => _selectedTile = value;
         }
+
+        public static Color ColorSelectedTile
+        {
+            get => _colorSelectedTile;
+        }
+
+        public static Color ColorPossibleMove
+        {
+            get => _colorPossibleMove;
+        }
     }
 
     /// <summary>
@@ -134,12 +151,13 @@ namespace chess
     public class Tile
     {
         private Texture2D _texture;
-        private static Texture2D _textureHighlight = Board.TextureHighlight;
 
         private Rectangle _pos;
         private (int, int) _coordinate;
         private int _width;
         private int _height;
+
+        private bool _isPossibleMove;
 
         /// <summary>
         /// Creates a new tile.
@@ -160,8 +178,11 @@ namespace chess
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (Board.SelectedTile == this) spriteBatch.Draw(_textureHighlight, _pos, Color.White);
-            else spriteBatch.Draw(_texture, _pos, Color.White);
+            spriteBatch.Draw(_texture, _pos, Color.White);
+
+            if (Board.SelectedTile == this) spriteBatch.Draw(_texture, _pos, new Color(Board.ColorSelectedTile, 0.5f));
+
+            if (_isPossibleMove) spriteBatch.Draw(_texture, _pos, new Color(Board.ColorPossibleMove, 0.5f));
         }
 
         /// <returns>This tile's position on the screen(as Rectangle)</returns>
@@ -174,6 +195,12 @@ namespace chess
         public (int, int) Coordinate
         {
             get => _coordinate;
+        }
+
+        public bool IsPossibleMove
+        {
+            get => _isPossibleMove;
+            set => _isPossibleMove = value;
         }
     }
 }

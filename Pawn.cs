@@ -18,7 +18,7 @@ namespace chess
             value = 1;
         }
 
-        public override (int, int)[] CalculatePotentialMoves()
+        protected override (int, int)[] FindPossibleMoves()
         {
             //throw new NotImplementedException();
             return new (int, int)[] { (0, 0) };
