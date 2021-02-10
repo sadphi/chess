@@ -10,6 +10,7 @@ namespace chess
     public class GameManager
     {
         private Player _curPlayer;
+        private Player _otherPlayer;
         private Player _playerOne;
         private Player _playerTwo;
         private List<Player> _players = new List<Player>();
@@ -35,6 +36,9 @@ namespace chess
             _players.Add(playerOne);
             _players.Add(playerTwo);
 
+            //Set the who is the other player (not taking its turn).
+            _otherPlayer = _players.Find(p => p != _curPlayer);
+
             _curPlayer.IsMyTurn = true;
             _playerOne = playerOne;
             _playerTwo = playerTwo;
@@ -57,13 +61,25 @@ namespace chess
         /// </summary>
         public void NextTurn()
         {
+            _otherPlayer = _curPlayer;
             if (_curPlayer == _playerOne) _curPlayer = _playerTwo;
             else _curPlayer = _playerOne;
         }
 
+        /// <summary>
+        /// Gets the player that is taking its turn.
+        /// </summary>
         public Player CurrentPlayer
         {
             get => _curPlayer;
+        }
+
+        /// <summary>
+        /// Gets the player that IS NOT taking its turn.
+        /// </summary>
+        public Player OtherPlayer
+        {
+            get => _otherPlayer;
         }
 
         public Player PlayerOne

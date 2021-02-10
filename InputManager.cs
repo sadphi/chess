@@ -50,8 +50,7 @@ namespace chess
                     if (t.Position.Contains(_mouseRectangle))
                     {
                         //Try moving the player's selected piece to tile 't'. Go to next turn if it was.
-                        Player other = gameManager.Players.Find(p => p != curPlayer);
-                        if (curPlayer.MovePiece(t, other))
+                        if (curPlayer.MovePiece(t, gameManager.OtherPlayer))
                         {
                             gameManager.NextTurn();
                             break;

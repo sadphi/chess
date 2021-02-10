@@ -185,7 +185,7 @@ namespace chess
             if (_isPossibleMove) spriteBatch.Draw(_texture, _pos, new Color(Board.ColorPossibleMove, 0.5f));
         }
 
-        /// <returns>This tile's position on the screen(as Rectangle)</returns>
+        /// <returns>This tile's position on the screen.</returns>
         public Rectangle Position
         {
             get => _pos;

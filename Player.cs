@@ -84,7 +84,7 @@ namespace chess
 
             if (isSuccess && other != null)
             {
-                //Check if this new tile has an enemy piece.
+                //Check if the destination tile has an enemy piece.
                 //Capture the piece if there is one.
 
                 Piece toCapture = other.Pieces.Find(piece => piece.TileCoordinate == tile.Coordinate);
