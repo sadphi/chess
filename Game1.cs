@@ -38,10 +38,15 @@ namespace chess
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            piece1 = new Pawn(Content.Load<Texture2D>("pawn"), new PieceColor("t"), (4, 4));
-            piece2 = new Pawn(Content.Load<Texture2D>("pawn"), new PieceColor("x"), (2, 2));
-            player1 = new Player(piece1);
-            player2 = new Player(piece2);
+            player1 = new Player(ColorChess.Light);
+            player2 = new Player(ColorChess.Dark);
+
+            player1.SetOpponent(player2);
+            player1.CreatePieces(Content);
+
+            player2.CreatePieces(Content);
+            player2.SetOpponent(player1);
+            
             gameManager = new GameManager(player1, player2);
         }
 

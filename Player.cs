@@ -2,14 +2,13 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace chess
 {
     public class Player
     {
+        private Player _opponent;
+        private ColorChess _color;
         private List<Piece> _pieces = new List<Piece>();
         private List<Piece> _piecesCaptured = new List<Piece>();
         private Piece _selectedPiece;
@@ -17,9 +16,16 @@ namespace chess
         private bool _isMyTurn;
         private int _points;
 
-        public Player(Piece test)
+        /// <summary>
+        /// When a Player is created, two methods must be called to completed initialization:
+        /// 
+        /// CreatePieces() must be called to create all the pieces.
+        /// 
+        /// SetOpponent() must be called to set the opponent to this Player.
+        /// </summary>
+        public Player(ColorChess color)
         {
-            _pieces.Add(test);
+            _color = color;
         }
 
         /// <summary>
@@ -52,6 +58,43 @@ namespace chess
         }
 
         /// <summary>
+        /// Creates all pieces for this player.
+        /// </summary>
+        public void CreatePieces(Microsoft.Xna.Framework.Content.ContentManager cm)
+        {
+            switch (_color)
+            {
+                case ColorChess.Light:
+                    
+                    CreatePiecesLight(cm);
+                    break;
+                case ColorChess.Dark:
+                    CreatePiecesDark(cm);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Creates all pieces for the "Light" Player.
+        /// </summary>
+        private void CreatePiecesLight(Microsoft.Xna.Framework.Content.ContentManager cm)
+        {
+            string colorSuffix = "light";
+
+            _pieces.Add(new Pawn(this, cm.Load<Texture2D>("pawn_" + colorSuffix), (4, 4), _color));
+        }
+
+        /// <summary>
+        /// Creates all pieces for the "Dark" Player.
+        /// </summary>
+        private void CreatePiecesDark(Microsoft.Xna.Framework.Content.ContentManager cm)
+        {
+            string colorSuffix = "dark";
+
+            _pieces.Add(new Pawn(this, cm.Load<Texture2D>("pawn_" + colorSuffix), (3, 3), _color));
+        }
+
+        /// <summary>
         /// Try selecting a piece on a tile.
         /// </summary>
         /// <param name="tile">The tile where the piece (is possibly) standing.</param>
@@ -70,6 +113,16 @@ namespace chess
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Check if this Player has a Piece at the specified coordinate.
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns>'true' if a piece is found, 'false' otherwise.</returns>
+        public bool HasPieceAtCoordinate((int, int) pos)
+        {
+            return _pieces.Exists(p => pos ==  p.TileCoordinate);
         }
 
         /// <summary>
@@ -98,6 +151,30 @@ namespace chess
             _hasSelectedPiece = false;
 
             return isSuccess;
+        }
+
+        /// <summary>
+        /// Sets the opponent to this Player.
+        /// </summary>
+        /// <param name="p">The opponent.</param>
+        public void SetOpponent(Player p) 
+        {
+            _opponent = p;
+        }
+
+        public Player Opponent
+        {
+            get 
+            {
+                if (_opponent == null)
+                {
+                    throw new NotImplementedException(
+                        "An opponent to this Player has not been set!" + 
+                        " Use SetOpponent() to set the opponent."
+                        );
+                }
+                return _opponent;
+            }
         }
 
         public Piece SelectedPiece

@@ -14,14 +14,16 @@ namespace chess
         protected (int, int) tile;                   //Coordinate of current tile
         protected Vector2 boardPos;                  //The "real" position (used to move/draw tile)
         protected (int, int) prevTile;               //The tile where this piece was previously standing
-        protected List<(int, int)> possibleMoves;   //The tiles this piece can move to
+        protected List<(int, int)> possibleMoves;    //The tiles this piece can move to
         protected Texture2D texture;
-        protected PieceColor color;
+        protected ColorChess color;
         protected string name;
         protected string notation;
+        protected Player owner;
 
-        public Piece(Texture2D texture, PieceColor color, (int, int) pos)
+        public Piece(Player owner, Texture2D texture, (int, int) pos, ColorChess color)
         {
+            this.owner = owner;
             this.color = color;
             this.texture = texture;
             Move(pos);
@@ -56,7 +58,7 @@ namespace chess
         /// </summary>
         /// <param name="pos">The tile coordinate to move to.</param>
         /// <returns>true if move was made, false otherwise.</returns> 
-        public bool Move((int, int) pos)
+        public virtual bool Move((int, int) pos)
         {
             if (possibleMoves == null) //Collection is always null when the piece spawns for the first time
             {
@@ -74,8 +76,9 @@ namespace chess
         }
 
         /// <summary>
-        /// Set the Vector2 position of this piece. ("Real" position)
+        /// Set the Vector2 position of this piece. ("Real" position on board)
         /// </summary>
+        /// <param name="pos">The tile coordinate to use.</param>
         private void SetBoardPosition((int, int) pos)
         {
             tile = pos;
@@ -109,15 +112,5 @@ namespace chess
             get => value;
         }
 
-    }
-
-    public struct PieceColor
-    {
-        public PieceColor(string color)
-        {
-            Color = color;
-        }
-
-        public string Color { get; private set; }
     }
 }

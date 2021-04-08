@@ -1,9 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace chess
 {
@@ -36,7 +33,7 @@ namespace chess
             _players.Add(playerOne);
             _players.Add(playerTwo);
 
-            //Set the who is the other player (not taking its turn).
+            // Set who the other player is (the one not taking its turn).
             _otherPlayer = _players.Find(p => p != _curPlayer);
 
             _curPlayer.IsMyTurn = true;
@@ -96,11 +93,5 @@ namespace chess
         {
             get => _players;
         }
-    }
-
-    public enum PlayerTurn
-    {
-        Dark,
-        Light
     }
 }

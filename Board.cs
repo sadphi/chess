@@ -92,21 +92,39 @@ namespace chess
         /// <param name="removeHighlight">Removes highlights if set to true.</param>
         public static void HighlightPossibleMoves(List<(int, int)> moves, bool removeHighlight)
         {
+            //TODO doesn't correctly highlight dark tiles
             foreach (var move in moves)
             {
-                if (!removeHighlight) GetTileAtIndex(move).IsPossibleMove = true;
-                else                  GetTileAtIndex(move).IsPossibleMove = false;
+                Tile t = GetTileAtIndex(move);
+                // If the tile is out of bounds, skip to the next move
+                if (t == null) continue;
+
+                if (!removeHighlight) t.IsPossibleMove = true;
+                else                  t.IsPossibleMove = false;
             }
         }
 
         /// <summary>
-        /// 
+        /// Returns the tile at the given coordinate. Returns null if the coordinates are out of bounds.
         /// </summary>
-        /// <param name="index">Tile coordinate.</param>
-        /// <returns>The tile at the specified coordinate.</returns>
-        public static Tile GetTileAtIndex((int, int) index)
+        /// <param name="cor">Tile coordinate.</param>
+        /// <returns>The tile at the specified coordinate, or null if out of bounds.</returns>
+        public static Tile GetTileAtIndex((int, int) cor)
         {
-            return _tiles[index.Item1, index.Item2];
+            if (IsTileInBounds(cor))
+                return _tiles[cor.Item1, cor.Item2];
+            else 
+                return null;
+        }
+
+        /// <summary>
+        /// Check if the specified coordinate is in the bounds of the chess board.
+        /// </summary>
+        /// <param name="cor">The coordinate to check.</param>
+        /// <returns>true if in bounds; false if out of bounds.</returns>
+        public static bool IsTileInBounds((int, int) cor)
+        {
+            return cor.Item1 >= 0 && cor.Item1 < 8 && cor.Item2 >= 0 && cor.Item2 < 8;
         }
 
 
