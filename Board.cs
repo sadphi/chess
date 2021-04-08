@@ -79,11 +79,11 @@ namespace chess
 
             _texturePossibleMove = new Texture2D(graphicsDevice, _tileWidth, _tileHeight);
             _texturePossibleMove.SetData(_colorPossibleMove);
-            _texturePossibleMove.CreateBorder(Color.DarkOrange, 2);
+            _texturePossibleMove.CreateBorder(Color.DarkOrange, 2, true);
 
             _textureSelectedTile = new Texture2D(graphicsDevice, _tileWidth, _tileHeight);
             _textureSelectedTile.SetData(_colorSelectedTile);
-            _textureSelectedTile.CreateBorder(Color.Beige, 2);
+            _textureSelectedTile.CreateBorder(Color.Beige, 2, false);
 
             CreateTiles();
         }
