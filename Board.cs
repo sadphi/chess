@@ -6,16 +6,19 @@ namespace chess
 {
     public static class Board
     {
-        private static Texture2D _textureDark;
-        private static Texture2D _textureLight;
+        private static readonly int _tileWidth = 128;
+        private static readonly int _tileHeight = 128;
 
         private static Color[] _colorDark = new Color[] { Color.Black };
         private static Color[] _colorLight = new Color[] { Color.White };
-        private static Color _colorSelectedTile = new Color(37, 170, 146);
-        private static Color _colorPossibleMove = new Color(94, 191, 21);
+        private static Color[] _colorSelectedTile = new Color[_tileWidth * _tileHeight];
+        private static Color[] _colorPossibleMove = new Color[_tileWidth * _tileHeight];
 
-        private static readonly int _tileWidth = 128;
-        private static readonly int _tileHeight = 128;
+        private static Texture2D _textureDark;
+        private static Texture2D _textureLight;
+        private static Texture2D _textureSelectedTile;
+        private static Texture2D _texturePossibleMove;
+
         private static int _boardOffsetHoriz = (int)(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 3.5f);
         private static int _boardOffsetVert = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 6;
 
@@ -57,11 +60,30 @@ namespace chess
         /// </summary>
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
+            // These for-loops sets the color of each pixel
+            for (int i = 0; i < _colorSelectedTile.Length; i++)
+            {
+                _colorSelectedTile[i] = new Color(94, 191, 21);
+            }
+
+            for (int i = 0; i < _colorPossibleMove.Length; i++)
+            {
+                _colorPossibleMove[i] = new Color(50, 75, 119);
+            }
+
             _textureDark = new Texture2D(graphicsDevice, 1, 1);
             _textureDark.SetData(_colorDark);
 
             _textureLight = new Texture2D(graphicsDevice, 1, 1);
             _textureLight.SetData(_colorLight);
+
+            _texturePossibleMove = new Texture2D(graphicsDevice, _tileWidth, _tileHeight);
+            _texturePossibleMove.SetData(_colorPossibleMove);
+            _texturePossibleMove.CreateBorder(Color.DarkOrange, 2);
+
+            _textureSelectedTile = new Texture2D(graphicsDevice, _tileWidth, _tileHeight);
+            _textureSelectedTile.SetData(_colorSelectedTile);
+            _textureSelectedTile.CreateBorder(Color.Beige, 2);
 
             CreateTiles();
         }
@@ -79,7 +101,7 @@ namespace chess
         /// <param name="spriteBatch"></param>
         public static void Draw(SpriteBatch spriteBatch)
         {
-           foreach (Tile t in _tiles)
+            foreach (Tile t in _tiles)
             {
                 t.Draw(spriteBatch);
             }
@@ -113,7 +135,7 @@ namespace chess
         {
             if (IsTileInBounds(cor))
                 return _tiles[cor.Item1, cor.Item2];
-            else 
+            else
                 return null;
         }
 
@@ -152,14 +174,14 @@ namespace chess
             set => _selectedTile = value;
         }
 
-        public static Color ColorSelectedTile
+        public static Texture2D TextureSelectedTile
         {
-            get => _colorSelectedTile;
+            get => _textureSelectedTile;
         }
 
-        public static Color ColorPossibleMove
+        public static Texture2D TexturePossibleMove
         {
-            get => _colorPossibleMove;
+            get => _texturePossibleMove;
         }
     }
 
@@ -198,9 +220,11 @@ namespace chess
         {
             spriteBatch.Draw(_texture, _pos, Color.White);
 
-            if (Board.SelectedTile == this) spriteBatch.Draw(_texture, _pos, new Color(Board.ColorSelectedTile, 0.5f));
+            if (Board.SelectedTile == this)
+                spriteBatch.Draw(Board.TextureSelectedTile, _pos, Color.White);             
 
-            if (_isPossibleMove) spriteBatch.Draw(_texture, _pos, new Color(Board.ColorPossibleMove, 0.5f));
+            if (_isPossibleMove)
+                spriteBatch.Draw(Board.TexturePossibleMove, _pos, Color.White);
         }
 
         /// <returns>This tile's position on the screen.</returns>
