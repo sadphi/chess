@@ -81,7 +81,10 @@ namespace chess
         {
             string colorSuffix = "light";
 
-            _pieces.Add(new Pawn(this, cm.Load<Texture2D>("pawn_" + colorSuffix), (4, 4), _color));
+            for (int col = 0; col < 8; col++)
+            {
+                _pieces.Add(new Pawn(this, cm.Load<Texture2D>("pawn_" + colorSuffix), (6, col), _color));
+            }
         }
 
         /// <summary>
@@ -91,7 +94,10 @@ namespace chess
         {
             string colorSuffix = "dark";
 
-            _pieces.Add(new Pawn(this, cm.Load<Texture2D>("pawn_" + colorSuffix), (3, 3), _color));
+            for (int col = 0; col < 8; col++)
+            {
+                _pieces.Add(new Pawn(this, cm.Load<Texture2D>("pawn_" + colorSuffix), (1, col), _color));
+            }
         }
 
         /// <summary>
@@ -198,6 +204,11 @@ namespace chess
         public List<Piece> Pieces
         {
             get => _pieces;
+        }
+
+        public ColorChess Color
+        {
+            get => _color;
         }
     }
 }

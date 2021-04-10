@@ -38,6 +38,7 @@ namespace chess
                 for (int j = 0; j < 8; j++)
                 {
                     int x = _boardOffsetHoriz + j * _tileWidth;
+                    // This adds the tile with matrix indexing, i.e (row, col), NOT (X, Y).
                     _tiles[i, j] = new Tile(curColor, _tileWidth, _tileHeight, (i, j), new Rectangle(x, y, _tileWidth, _tileHeight));
 
 
@@ -114,7 +115,6 @@ namespace chess
         /// <param name="removeHighlight">Removes highlights if set to true.</param>
         public static void HighlightPossibleMoves(List<(int, int)> moves, bool removeHighlight)
         {
-            //TODO doesn't correctly highlight dark tiles
             foreach (var move in moves)
             {
                 Tile t = GetTileAtIndex(move);

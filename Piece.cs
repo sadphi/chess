@@ -11,10 +11,9 @@ namespace chess
     {
         protected int id;
         protected int value;
-        protected (int, int) tile;                   //Coordinate of current tile
-        protected Vector2 boardPos;                  //The "real" position (used to move/draw tile)
-        protected (int, int) prevTile;               //The tile where this piece was previously standing
-        protected List<(int, int)> possibleMoves;    //The tiles this piece can move to
+        protected (int, int) tile;                   // Coordinate of current tile. (row, col), just as in a matrix.
+        protected Vector2 boardPos;                  // The "real" position (used to move/draw tile)
+        protected List<(int, int)> possibleMoves;    // The tiles this piece can move to
         protected Texture2D texture;
         protected ColorChess color;
         protected string name;
@@ -36,10 +35,7 @@ namespace chess
         /// </summary>
         public void Update(GameTime gameTime)
         {
-            if (tile != prevTile)
-            {
-                possibleMoves = FindPossibleMoves();
-            }
+            possibleMoves = FindPossibleMoves();
         }
 
         /// <summary>
@@ -48,7 +44,6 @@ namespace chess
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            //TODO: Implement usage of PieceColor
             spriteBatch.Draw(texture, boardPos, Color.White);
         }
 

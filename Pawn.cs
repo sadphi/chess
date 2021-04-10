@@ -18,23 +18,25 @@ namespace chess
 
         protected override List<(int, int)> FindPossibleMoves()
         {
+            // Set to either 1 or -1:
+            // 1 is for Light pieces.
+            // -1 is for Dark pieces.
+            int direction = (owner.Color == ColorChess.Light) ? 1 : -1;
             List<(int, int)> res = new List<(int, int)>();
-            int possibleSteps;
-
-            if (!_hasMoved) possibleSteps = 2;
-            else possibleSteps = 1;
             
             
-            (int, int) next = (tile.Item1 - 1, tile.Item2);
+            (int, int) next = (tile.Item1 - direction, tile.Item2);
             (int, int) sideRight = (next.Item1, next.Item2 + 1);
             (int, int) sideLeft = (next.Item1, next.Item2 - 1);
 
-            if (!owner.Opponent.HasPieceAtCoordinate(next))
+            // A move forward is only possible if this piece isn't blocked, by either the owner or the opponent.
+            if (!owner.Opponent.HasPieceAtCoordinate(next) && !owner.HasPieceAtCoordinate(next))
             {
-                (int, int) nextNext = (next.Item1 - 1, next.Item2);
+                (int, int) nextNext = (next.Item1 - direction, next.Item2);
                 res.Add(next);
 
-                if (possibleSteps == 2 && !owner.Opponent.HasPieceAtCoordinate(nextNext))
+                // This checks if a second move forward is possible.
+                if (!_hasMoved && !owner.Opponent.HasPieceAtCoordinate(nextNext) && !owner.HasPieceAtCoordinate(nextNext))
                     res.Add(nextNext);
             }
 
@@ -49,8 +51,6 @@ namespace chess
             {
                 res.Add(sideLeft);
             }
-            
-
             return res;
         }
 

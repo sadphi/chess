@@ -42,19 +42,22 @@ namespace chess
                 }
             }
 
-            //If the player has selected a piece
+            // If the player has selected a piece
             else if (curPlayer.HasSelectedPiece && _curMouseState.LeftButton == ButtonState.Pressed && _prevMouseState.LeftButton == ButtonState.Released)
             {
                 foreach (Tile t in Board.Tiles)
                 {
                     if (t.Position.Contains(_mouseRectangle))
                     {
-                        //Try moving the player's selected piece to tile 't'. Go to next turn if it was.
+                        // Try moving the player's selected piece to tile 't'. Go to next turn if the move was successful.
                         if (curPlayer.MovePiece(t, gameManager.OtherPlayer))
                         {
                             gameManager.NextTurn();
                             break;
                         }
+
+                        // Try selecting a new Piece instead. Exit loop if a new piece could be selected.
+                        else if (curPlayer.SelectPiece(t)) break;
                         
                     }
                 }
